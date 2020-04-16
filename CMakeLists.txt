@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
-project(wolfram-setreplace)
+project(SetReplace)
+option(SetReplace_BUILD_TESTING "Enable cpp testing." OFF)
 set(libSetReplace_headers
     Rule.hpp
     IDTypes.hpp
@@ -15,4 +16,10 @@ set(libSetReplace_sources
     # SetReplace.cpp
     )
 list(TRANSFORM libSetReplace_sources PREPEND "libSetReplace/")
-add_library(libSetReplace ${libSetReplace_sources})
+add_library(SetReplace ${libSetReplace_sources})
+target_include_directories(SetReplace PUBLIC ./libSetReplace)
+
+if(SetReplace_BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(libSetReplace/test)
+endif()
