@@ -1,5 +1,7 @@
 set(enabled_libs_ SetReplace)
 
+add_subdirectory(set_replace)
+
 # Add the pybind module
 pybind11_add_module(_wolfram_model
   wolfram_model_init_py.cpp # Where module is added
@@ -26,6 +28,3 @@ add_custom_command(
   ${CMAKE_BUILD_PYTHONLIBDIR}/$<TARGET_FILE_NAME:_wolfram_model>
   )
 
-# if(SetReplace_BUILD_TESTING)
-#   add_subdirectory(test)
-# endif()

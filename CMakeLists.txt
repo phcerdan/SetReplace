@@ -7,6 +7,10 @@ include(GNUInstallDirs) # Define CMAKE_INSTALL_xxx: LIBDIR, INCLUDEDIR
 set(CMAKE_INSTALL_PYTHONLIBDIR wolfram_model) # Install folder for python libs
 set(CMAKE_BUILD_PYTHONLIBDIR ${PROJECT_BINARY_DIR}/wolfram_model) # copy python libs at build time
 
+if(SetReplace_WRAP_PYTHON)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 set(libSetReplace_headers
     Rule.hpp
     IDTypes.hpp
