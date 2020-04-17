@@ -1,3 +1,57 @@
+# Deploy artifacts
+deploy/_skbuild/
+deploy/dist/
+deploy/sgext.egg-info/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+# python notebooks
+.ipynb_checkpoints
+# Dgtal viewer garbage.
+.qglviewer.xml
+# test output
+graphviz_test_out.dot
+compile_commands.json
+#GitHub C++ gitignore
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+# Precompiled Headers
+*.gch
+*.pch
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+# Fortran module files
+*.mod
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+# Executables
+*.exe
+*.out
+*.app
+##########
+#Project#
+/build*
+/data*
+#EDITORS#
+*.swp
+*.swo
+*.orig
+*.*.orig
+Session.vim
+.eclimrc
+*.project
+*.cproject
+*.ycm_extra_conf.pyc
+
 # Xcode
 
 xcuserdata/
