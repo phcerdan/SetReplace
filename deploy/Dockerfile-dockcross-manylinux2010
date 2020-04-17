@@ -1,0 +1,37 @@
+FROM dockcross/manylinux2014-x64
+LABEL MAINTAINER="Pablo Hernandez Cerdan <pablo.hernandez.cerdan@outlook.com>"
+
+#### Global Variables
+ENV BUILD_PATH /work
+####
+
+ENV SR_BUILD_DIR ${BUILD_PATH}/sr-build
+ENV SR_SRC_FOLDER_NAME sr-src
+ENV SR_SRC_DIR ${BUILD_PATH}/${SR_SRC_FOLDER_NAME}
+
+# Copy files from current repo into the docker container
+COPY . ${SR_SRC_DIR}
+
+RUN cmake \
+        -G Ninja \
+        -DCMAKE_BUILD_TYPE:STRING=Release \
+        -DSetReplace_BUILD_TESTING:BOOL=OFF \
+        ${SR_SRC_DIR} && \
+    ninja && \
+    find . -name "*.o" -delete && \
+    find ../sr-* -depth -name .git -exec rm -rf '{}' \;
+
+
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG IMAGE=wolfram_model-linux
+ARG VERSION=latest
+ARG VCS_REF
+ARG VCS_URL
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name=$IMAGE \
+      org.label-schema.version=$VERSION \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url=$VCS_URL \
+      org.label-schema.schema-version="1.0" \
+      build_command="docker build -f ./deploy/Dockerfile-dockcross-manylinux2014 . -t phcerdan/wolfram_model-linux"
