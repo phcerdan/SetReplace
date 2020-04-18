@@ -13,4 +13,59 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: '$(Build.SourcesDirectory)/deploy/dist/'
-      artifactName: 'WebApp'
+      artifactName: 'LinuxWheels'
+
+- job: 'DeployMacOS'
+  pool:
+    vmImage: 'macOS-10.15'
+  strategy:
+    matrix:
+      Python35:
+        python.version: '3.5'
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+      Python38:
+        python.version: '3.8'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - task: Bash@3
+    inputs:
+      filePath: '$(Build.SourcesDirectory)/deploy/deploy_macos_one_python.sh'
+      workingDirectory: '$(Build.SourcesDirectory)'
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/deploy/dist/'
+      artifactName: 'MacOSWheel$(python.version)'
+
+- job: 'DeployWindows'
+  pool:
+    vmImage: 'windows-2019'
+  strategy:
+    matrix:
+      Python35:
+        python.version: '3.5'
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+      Python38:
+        python.version: '3.8'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+  - task: Bash@3
+    inputs:
+      # use inline to workaround bug where dirname $0 does not work
+      # https://github.com/Microsoft/azure-pipelines-tasks/issues/7934
+      targetType: 'inline'
+      script: ./deploy/deploy_windows_one_python.sh
+      workingDirectory: $(Build.SourcesDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.SourcesDirectory)/deploy/dist
+      artifactName: 'WindowsWheel$(python.version)'

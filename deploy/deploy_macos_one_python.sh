@@ -13,8 +13,11 @@ python -m pip install ninja
 python -m pip install delocate
 python -m pip install -r ${script_dir}/../requirements-dev.txt
 
+pushd ${script_dir}
 python setup.py bdist_wheel --build-type Release -G Ninja -- \
-  -CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9
+  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9 \
+  -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 \
+  -DCMAKE_CXX_STANDARD=14 \
   -DWOLFRAM_MODEL_BUILD_TESTING:BOOL=OFF \
   -DWOLFRAM_MODEL_WRAP_PYTHON:BOOL=ON \
   || exit 1
@@ -22,3 +25,4 @@ python setup.py bdist_wheel --build-type Release -G Ninja -- \
 
 delocate-listdeps $PWD/dist/*.whl # lists library dependencies
 delocate-wheel $PWD/dist/*.whl # copies library dependencies into wheel
+popd
