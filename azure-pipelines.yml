@@ -10,12 +10,7 @@ jobs:
     inputs:
       filePath: '$(Build.SourcesDirectory)/deploy/deploy_linux.sh'
       workingDirectory: '$(Build.SourcesDirectory)'
-  - task: CopyFiles@2
+  - task: PublishPipelineArtifact@1
     inputs:
-      sourceFolder: '$(Build.SourcesDirectory)/deploy/dist/'
-      contents: '**' # All files and subfolders in sourceFolder
-      targetFolder: '$(Build.ArtifactStagingDirectory)'
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'linux_wheels'
+      targetPath: '$(Build.SourcesDirectory)/deploy/dist/'
+      artifactName: 'WebApp'
