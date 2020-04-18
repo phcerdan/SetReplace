@@ -1,0 +1,21 @@
+# https://aka.ms/yaml
+
+jobs:
+- job: 'DeployLinux'   # name of the deployment job (A-Z, a-z, 0-9, and underscore)
+  displayName: 'DeployLinux'  # friendly name to display in the UI
+  pool:                # see the following "Pool" schema
+    vmImage: 'ubuntu-18.04'
+  steps:
+  - task: Bash@3
+    inputs:
+      filePath: '$(Build.SourcesDirectory)/deploy/deploy_linux.sh'
+      workingDirectory: '$(Build.SourcesDirectory)'
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)/deploy/dist/'
+      contents: '**' # All files and subfolders in sourceFolder
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'linux_wheels'
