@@ -6,6 +6,7 @@ message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
 
 option(SET_REPLACE_WITH_MATHEMATICA "Add the library definition for Wolfram LibraryLink" OFF)
 option(SET_REPLACE_BUILD_TESTING "Enable cpp testing." OFF)
+option(SET_REPLACE_WRAP_PYTHON "Wrap python using pybind11" OFF)
 include(GNUInstallDirs) # Define CMAKE_INSTALL_xxx: LIBDIR, INCLUDEDIR
 set(SetReplace_export_file "${PROJECT_BINARY_DIR}/SetReplaceTargets.cmake")
 
@@ -44,12 +45,21 @@ message(STATUS "SET_REPLACE_BUILD_TESTING: ${SET_REPLACE_BUILD_TESTING}")
 message(STATUS "SET_REPLACE_WITH_MATHEMATICA: ${SET_REPLACE_WITH_MATHEMATICA}")
 message(STATUS "SET_REPLACE_EXTRA_COMPILE_OPTIONS: ${SET_REPLACE_EXTRA_COMPILE_OPTIONS}")
 
+# The python package is named wolfram_model
+set(CMAKE_INSTALL_PYTHONLIBDIR wolfram_model) # Install folder for python libs
+set(CMAKE_BUILD_PYTHONLIBDIR ${PROJECT_BINARY_DIR}/wolfram_model) # copy python libs at build time
+if(SET_REPLACE_WRAP_PYTHON)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+message(STATUS "SET_REPLACE_WRAP_PYTHON: ${SET_REPLACE_WRAP_PYTHON}")
+
 set(libSetReplace_headers
     Rule.hpp
     IDTypes.hpp
     Expression.hpp
     Match.hpp
     Set.hpp
+    SetReplaceIO.hpp
     )
 set(libSetReplace_sources
     Expression.cpp
@@ -129,6 +139,23 @@ if(SET_REPLACE_BUILD_TESTING)
   add_subdirectory(libSetReplace/test)
 endif()
 
+if(SET_REPLACE_WRAP_PYTHON)
+    # Fetch pybind11
+    include(FetchContent)
+    FetchContent_Declare(
+        pybind11
+        GIT_REPOSITORY https://github.com/pybind/pybind11
+        GIT_TAG v2.5
+        )
+    FetchContent_GetProperties(pybind11)
+    if(NOT pybind11_POPULATED)
+        FetchContent_Populate(pybind11)
+        add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
+    endif()
+
+    add_subdirectory(python)
+endif()
+
 # INSTALL
 set(install_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/SetReplace")
 
@@ -178,3 +205,6 @@ add_custom_target(set-replace-install-runtime
   )
 message(STATUS "SET_REPLACE_LIBRARIES: ${SET_REPLACE_LIBRARIES}")
 add_dependencies(set-replace-install-runtime ${SET_REPLACE_LIBRARIES})
+if(SET_REPLACE_WRAP_PYTHON)
+  add_dependencies(set-replace-install-runtime _wolfram_model)
+endif()
