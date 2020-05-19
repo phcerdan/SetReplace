@@ -1,3 +1,63 @@
+# Wolfram Model Python Wrapping
+
+This provides python wrappings of the `c++` core of **SetReplace**.
+Original work for Wolfram Language: https://github.com/maxitg/SetReplace
+
+To use in python
+```
+pip install wolfram_model
+```
+
+```python
+import wolfram_model as wm
+rule = wm.rule(inputs=[[-1,-2], [-2, -3]], outputs=[[-1,-3], [-4, -2], [-1, -4]])
+initial_expressions = [[1,2], [2, 3]]
+order_function = wm.matcher.ordering_function.RuleID
+order_direction = wm.matcher.ordering_direction.Normal
+ordering = [[order_function, order_direction]]
+random_seed = 0
+
+step_spec = wm.set.step_spec()
+step_spec.max_events = 100
+step_spec.max_generations_local = 100
+step_spec.max_final_atoms = 100000
+step_spec.max_final_atom_degree = 100000
+step_spec.max_final_expressions = 100000
+
+wms = wm.set(
+    rules=[rule], initial_expressions=initial_expressions,
+    ordering=ordering, random_seed=random_seed)
+wms.replace(step_spec)
+termination_reason = wms.get_termination_reason()
+max_complete_generation = wms.max_complete_generation()
+# print(wms.expressions())
+```
+
+Visualize it with networkx
+
+```python
+import wolfram_model.vis as vis
+
+method = "networkx"
+max_gen = wms.max_complete_generation() + 1
+fig, axs = plt.subplots(max_gen)
+for gen in range(max_gen):
+   G = vis.graph_at_generation(wms, input_generation=gen, method=method)
+   num_nodes = G.number_of_nodes()
+   pos = nx.nx_agraph.graphviz_layout(G, prog='dot')
+   nx.draw(G,
+           pos,
+           node_size=100,
+           ax=axs[gen],
+           with_labels=True,
+           node_color=range(num_nodes),
+           cmap=plt.get_cmap('Accent')
+           )
+plt.show()
+```
+
+![nx_draw_graph_gens](https://user-images.githubusercontent.com/3021667/79701297-355cba80-829c-11ea-9fbb-11effbc99a48.png)
+
 [Wolfram Models as Set Substitution Systems](#wolfram-models-as-set-substitution-systems) | [Getting Started](#getting-started) | [Symbols and Functions](#symbols-and-functions) | [Physics](#physics) | [Acknowledgements](#acknowledgements)
 
 # Wolfram Models as Set Substitution Systems
