@@ -15,7 +15,7 @@ python -m pip install -r ${script_dir}/requirements-deploy.txt
 
 pushd ${script_dir}
 python setup.py bdist_wheel --build-type Release -G Ninja -- \
-  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9 \
+  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.12 \
   -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 \
   -DCMAKE_CXX_STANDARD=14 \
   -DSET_REPLACE_BUILD_TESTING:BOOL=OFF \
