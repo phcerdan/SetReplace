@@ -12,7 +12,7 @@ pip install wolfram_model
 import wolfram_model as wm
 rule = wm.rule(inputs=[[-1,-2], [-2, -3]], outputs=[[-1,-3], [-4, -2], [-1, -4]])
 initial_expressions = [[1,2], [2, 3]]
-order_function = wm.matcher.ordering_function.RuleID
+order_function = wm.matcher.ordering_function.RuleIndex
 order_direction = wm.matcher.ordering_direction.Normal
 ordering = [[order_function, order_direction]]
 random_seed = 0
